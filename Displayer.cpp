@@ -1,5 +1,4 @@
 #include "Displayer.h"
-#include "GameConditions.h"
 #include <iostream>
 
 Displayer::Displayer()
@@ -11,9 +10,9 @@ Displayer::Displayer()
 	model_rect.setOutlineColor(sf::Color::Black);
 	model_rect.setOutlineThickness(1);
 
-	cells_representation = std::vector<std::vector<sf::RectangleShape>>(MAP_HEIGHT);
+	cells_representation = std::vector<std::vector<sf::RectangleShape>>(CELL_HEIGHT_AMOUNT);
 	for (auto& row : cells_representation)
-		row = std::vector<sf::RectangleShape>(MAP_WIDTH);
+		row = std::vector<sf::RectangleShape>(CELL_WIDTH_AMOUNT);
 
 	for (int i = 0; i < cells_representation.size(); ++i)
 	{
@@ -50,14 +49,14 @@ void Displayer::displayWindow(std::unique_ptr<sf::RenderWindow>& window)
 	}
 }
 
-void Displayer::drawMap(const Map& map, std::unique_ptr<sf::RenderWindow>& window)
+void Displayer::drawMap(const Map& map, std::unique_ptr<sf::RenderWindow>& window, Games choosed_game)
 {
 	for (int i = 0; i < map.size(); ++i)
 	{
 		auto&& row_size = map[i].size();
 		for (int j = 0; j < row_size; ++j)
 		{
-			if (GameConditions::choosed_game == Games::SeedsGrowth)
+			if (choosed_game == Games::SeedsGrowth)
 			{
 
 				if (map[i][j].alive)
@@ -109,4 +108,34 @@ bool Displayer::lookForInput(int x, int y , std::unique_ptr<sf::RenderWindow>& w
 		return true;
 	}
 	return false;
+}
+
+bool Displayer::lookForInput(GUIObject gui_object, std::unique_ptr<sf::RenderWindow>& window)
+{
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && GameData::MousePressed)
+		return false;
+	else
+		GameData::MousePressed = false;
+
+	int mouse_x = sf::Mouse::getPosition(*window).x;
+	int mouse_y = sf::Mouse::getPosition(*window).y;
+
+	int gui_object_x = gui_object.getX();
+	int gui_object_y = gui_object.getY();
+	if (mouse_x > gui_object_x && mouse_x < gui_object_x + gui_object.get_width() &&
+		mouse_y > gui_object_y && mouse_y < gui_object_y + gui_object.get_height() &&
+		sf::Mouse::isButtonPressed(sf::Mouse::Left) &&
+		GameData::MousePressed == false)
+	{
+		GameData::MousePressed = true;
+		return true;
+	}
+	return false;
+}
+void Displayer::drawGUIonScreen(std::vector<GUIObject> GUI, std::unique_ptr<sf::RenderWindow>& window)
+{
+	for (auto& gui_object : GUI)
+	{
+		window->draw(gui_object.sprite);
+	}
 }

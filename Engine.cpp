@@ -24,9 +24,9 @@ unsigned Engine::getNeighboursAmount(unsigned w, unsigned h, Map& map, Neighbour
 Map Engine::designateNextFrame(Map& map) // for GameOfLife
 {
 	Map new_map(map);
-	for (int i = 0; i < MAP_HEIGHT; ++i)
+	for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
 	{
-		for (int j = 0; j < MAP_WIDTH; ++j)
+		for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
 		{
 			auto& old_cell = map[i][j];
 			auto& new_cell = new_map[i][j];
@@ -50,9 +50,9 @@ Map Engine::designateNextFrame(Map& map) // for GameOfLife
 Map Engine::makeSeedsGrow(Map& map, NeighbourType neighbour_type, BoundaryCondition boundary_cond)
 {
 	Map new_map(map);
-	for (int i = 0; i < MAP_HEIGHT; ++i)
+	for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
 	{
-		for (int j = 0; j < MAP_WIDTH; ++j)
+		for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
 		{
 			auto& old_cell = map[i][j];
 			auto& neighbours = getNeighbours(j, i, map, neighbour_type, boundary_cond);
@@ -85,11 +85,11 @@ Engine::Neighbours Engine::PeriodicMoore(unsigned w, unsigned h, Map& map)
 							  { w - 1, h + 1 },{ w - 1, h } };
 	for (auto& cell : neighbours)
 	{
-		if (cell.first == MAP_WIDTH) cell.first = 0;
-		else if (cell.first == -1) cell.first = MAP_WIDTH - 1;
+		if (cell.first == CELL_WIDTH_AMOUNT) cell.first = 0;
+		else if (cell.first == -1) cell.first = CELL_WIDTH_AMOUNT - 1;
 
-		if (cell.second == MAP_HEIGHT) cell.second = 0;
-		else if (cell.second == -1) cell.second = MAP_HEIGHT - 1;
+		if (cell.second == CELL_HEIGHT_AMOUNT) cell.second = 0;
+		else if (cell.second == -1) cell.second = CELL_HEIGHT_AMOUNT - 1;
 	}
 
 	return neighbours;
@@ -204,7 +204,7 @@ Engine::Neighbours Engine::PeriodicPentaRandom(unsigned w, unsigned h, Map& map)
 
 Engine::Neighbours Engine::Moore(unsigned w, unsigned h, Map& map)
 {
-	if (w != 0 && (w + 1) != MAP_WIDTH && h != 0 && (h + 1) != MAP_HEIGHT) // all others
+	if (w != 0 && (w + 1) != CELL_WIDTH_AMOUNT && h != 0 && (h + 1) != CELL_HEIGHT_AMOUNT) // all others
 		return{ { w - 1, h - 1 },{ w, h - 1 },{ w + 1, h - 1 },
 		{ w + 1, h },{ w + 1, h + 1 },{ w, h + 1 },
 		{ w - 1, h + 1 },{ w - 1, h } };
@@ -212,95 +212,95 @@ Engine::Neighbours Engine::Moore(unsigned w, unsigned h, Map& map)
 	if (w == 0)
 	{
 		if (h == 0)				   return{ { w + 1, h },{ w + 1, h + 1 },{ w, h + 1 } }; // upper-left corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w + 1, h },{ w + 1, h - 1 },{ w, h - 1 } }; // down-left corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w + 1, h },{ w + 1, h - 1 },{ w, h - 1 } }; // down-left corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w + 1, h - 1 },{ w + 1, h },{ w + 1, h + 1 } }; // left side
 	}
 
-	if ((w + 1) == MAP_WIDTH)
+	if ((w + 1) == CELL_WIDTH_AMOUNT)
 	{
 		if (h == 0)				   return{ { w - 1, h },{ w - 1, h + 1 },{ w, h + 1 } }; // upper-right corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // down-right corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // down-right corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w - 1, h - 1 },{ w - 1, h },{ w - 1, h + 1 } }; // right side
 	}
 	else
 	{
 		if (h == 0) return{ { w - 1, h },{ w + 1, h },{ w - 1, h + 1 },{ w, h + 1 },{ w + 1, h + 1 } }; // upper side
-		if ((h + 1) == MAP_HEIGHT)
+		if ((h + 1) == CELL_HEIGHT_AMOUNT)
 			return{ { w - 1, h },{ w + 1, h },{ w - 1, h - 1 },{ w, h - 1 },{ w + 1, h - 1 } }; // down side
 	}
 }
 Engine::Neighbours Engine::Neumann(unsigned w, unsigned h, Map& map)
 {
-	if (w != 0 && (w + 1) != MAP_WIDTH && h != 0 && (h + 1) != MAP_HEIGHT) // all others
+	if (w != 0 && (w + 1) != CELL_WIDTH_AMOUNT && h != 0 && (h + 1) != CELL_HEIGHT_AMOUNT) // all others
 		return{ { w, h - 1 }, { w + 1, h }, { w, h + 1 }, { w - 1, h } };
 
 	if (w == 0)
 	{
 		if (h == 0)				   return{ { w + 1, h },{ w, h + 1 } }; // upper-left corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w + 1, h },{ w, h - 1 } }; // down-left corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w + 1, h },{ w, h - 1 } }; // down-left corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w + 1, h } }; // left side
 	}
 
-	if ((w + 1) == MAP_WIDTH)
+	if ((w + 1) == CELL_WIDTH_AMOUNT)
 	{
 		if (h == 0)				   return{ { w - 1, h },{ w, h + 1 } }; // upper-right corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w, h - 1 },{ w - 1, h } }; // down-right corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w, h - 1 },{ w - 1, h } }; // down-right corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w - 1, h } }; // right side
 	}
 	else
 	{
 		if (h == 0) return{ { w - 1, h },{ w + 1, h },{ w, h + 1 } }; // upper side
-		if ((h + 1) == MAP_HEIGHT)
+		if ((h + 1) == CELL_HEIGHT_AMOUNT)
 			return{ { w - 1, h },{ w + 1, h },{ w, h - 1 } }; // down side
 	}
 }
 Engine::Neighbours Engine::HexLeft(unsigned w, unsigned h, Map& map)
 {
-	if (w != 0 && (w + 1) != MAP_WIDTH && h != 0 && (h + 1) != MAP_HEIGHT) // all others
+	if (w != 0 && (w + 1) != CELL_WIDTH_AMOUNT && h != 0 && (h + 1) != CELL_HEIGHT_AMOUNT) // all others
 		return{ { w, h - 1 }, { w - 1, h - 1 }, { w + 1, h }, { w + 1, h + 1 }, { w , h + 1 },{ w - 1, h } };
 
 	if (w == 0)
 	{
 		if (h == 0)				   return{ { w + 1, h },{ w + 1, h + 1 },{ w, h + 1 } }; // upper-left corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w + 1, h },{ w, h - 1 } }; // down-left corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w + 1, h },{ w, h - 1 } }; // down-left corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w + 1, h },{ w + 1, h + 1 } }; // left side
 	}
 
-	if ((w + 1) == MAP_WIDTH)
+	if ((w + 1) == CELL_WIDTH_AMOUNT)
 	{
 		if (h == 0)				   return{ { w - 1, h },{ w, h + 1 } }; // upper-right corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // down-right corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // down-right corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w - 1, h - 1 },{ w - 1, h } }; // right side
 	}
 	else
 	{
 		if (h == 0) return{ { w - 1, h },{ w + 1, h },{ w, h + 1 },{ w + 1, h + 1 } }; // upper side
-		if ((h + 1) == MAP_HEIGHT)
+		if ((h + 1) == CELL_HEIGHT_AMOUNT)
 			return{ { w - 1, h },{ w + 1, h },{ w - 1, h - 1 },{ w, h - 1 } }; // down side
 	}
 }
 Engine::Neighbours Engine::HexRight(unsigned w, unsigned h, Map& map)
 {
-	if (w != 0 && (w + 1) != MAP_WIDTH && h != 0 && (h + 1) != MAP_HEIGHT) // all others
+	if (w != 0 && (w + 1) != CELL_WIDTH_AMOUNT && h != 0 && (h + 1) != CELL_HEIGHT_AMOUNT) // all others
 		return{{ w, h - 1 }, { w + 1, h - 1 }, { w + 1, h }, { w, h + 1 }, { w - 1, h + 1 }, { w - 1, h } };
 
 	if (w == 0)
 	{
 		if (h == 0)				   return{ { w + 1, h }, { w, h + 1 } }; // upper-left corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w + 1, h },{ w + 1, h - 1 },{ w, h - 1 } }; // down-left corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w + 1, h },{ w + 1, h - 1 },{ w, h - 1 } }; // down-left corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w + 1, h - 1 },{ w + 1, h } }; // left side
 	}
 
-	if ((w + 1) == MAP_WIDTH)
+	if ((w + 1) == CELL_WIDTH_AMOUNT)
 	{
 		if (h == 0)				   return{ { w - 1, h },{ w - 1, h + 1 },{ w, h + 1 } }; // upper-right corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w, h - 1 },{ w - 1, h } }; // down-right corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w, h - 1 },{ w - 1, h } }; // down-right corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w - 1, h },{ w - 1, h + 1 } }; // right side
 	}
 	else
 	{
 		if (h == 0) return{ { w - 1, h },{ w + 1, h },{ w - 1, h + 1 },{ w, h + 1 } }; // upper side
-		if ((h + 1) == MAP_HEIGHT)
+		if ((h + 1) == CELL_HEIGHT_AMOUNT)
 			return{ { w - 1, h },{ w + 1, h },{ w, h - 1 },{ w + 1, h - 1 } }; // down side
 	}
 }
@@ -314,101 +314,101 @@ Engine::Neighbours Engine::HexRandom(unsigned w, unsigned h, Map& map)
 }
 Engine::Neighbours Engine::PentaLeft(unsigned w, unsigned h, Map& map)
 {
-	if (w != 0 && (w + 1) != MAP_WIDTH && h != 0 && (h + 1) != MAP_HEIGHT) // all others
+	if (w != 0 && (w + 1) != CELL_WIDTH_AMOUNT && h != 0 && (h + 1) != CELL_HEIGHT_AMOUNT) // all others
 		return{ { w - 1, h - 1 },{ w, h - 1 },{ w, h + 1 },{ w - 1, h + 1 },{ w - 1, h } };
 
 	if (w == 0)
 	{
 		if (h == 0)				   return{ { w, h + 1 } }; // upper-left corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w, h - 1 } }; // down-left corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w, h - 1 } }; // down-left corner
 		return{ { w, h - 1 },{ w, h + 1 } }; // left side
 	}
 
-	if ((w + 1) == MAP_WIDTH)
+	if ((w + 1) == CELL_WIDTH_AMOUNT)
 	{
 		if (h == 0)				   return{ { w - 1, h },{ w - 1, h + 1 },{ w, h + 1 } }; // upper-right corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // down-right corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // down-right corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w - 1, h - 1 },{ w - 1, h },{ w - 1, h + 1 } }; // right side
 	}
 	else
 	{
 		if (h == 0) return{ { w - 1, h },{ w - 1, h + 1 },{ w, h + 1 } }; // upper side
-		if ((h + 1) == MAP_HEIGHT)
+		if ((h + 1) == CELL_HEIGHT_AMOUNT)
 			return{ { w - 1, h },{ w - 1, h - 1 },{ w, h - 1 } }; // down side
 	}
 }
 Engine::Neighbours Engine::PentaRight(unsigned w, unsigned h, Map& map)
 {
-	if (w != 0 && (w + 1) != MAP_WIDTH && h != 0 && (h + 1) != MAP_HEIGHT) // all others
+	if (w != 0 && (w + 1) != CELL_WIDTH_AMOUNT && h != 0 && (h + 1) != CELL_HEIGHT_AMOUNT) // all others
 		return{ { w, h - 1 },{ w + 1, h - 1 },{ w + 1, h },{ w + 1, h + 1 },{ w, h + 1 } };
 
 	if (w == 0)
 	{
 		if (h == 0)				   return{ { w + 1, h },{ w + 1, h + 1 },{ w, h + 1 } }; // upper-left corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w + 1, h },{ w + 1, h - 1 },{ w, h - 1 } }; // down-left corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w + 1, h },{ w + 1, h - 1 },{ w, h - 1 } }; // down-left corner
 		return{ { w, h - 1 },{ w, h + 1 },{ w + 1, h - 1 },{ w + 1, h },{ w + 1, h + 1 } }; // left side
 	}
 
-	if ((w + 1) == MAP_WIDTH)
+	if ((w + 1) == CELL_WIDTH_AMOUNT)
 	{
 		if (h == 0)				   return{ { w, h + 1 } }; // upper-right corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w, h - 1 } }; // down-right corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w, h - 1 } }; // down-right corner
 		return{ { w, h - 1 },{ w, h + 1 } }; // right side
 	}
 	else
 	{
 		if (h == 0) return{ { w + 1, h },{ w, h + 1 },{ w + 1, h + 1 } }; // upper side
-		if ((h + 1) == MAP_HEIGHT)
+		if ((h + 1) == CELL_HEIGHT_AMOUNT)
 			return{ { w + 1, h },{ w, h - 1 },{ w + 1, h - 1 } }; // down side
 	}
 }
 Engine::Neighbours Engine::PentaUp(unsigned w, unsigned h, Map& map)
 {
-	if (w != 0 && (w + 1) != MAP_WIDTH && h != 0 && (h + 1) != MAP_HEIGHT) // all others
+	if (w != 0 && (w + 1) != CELL_WIDTH_AMOUNT && h != 0 && (h + 1) != CELL_HEIGHT_AMOUNT) // all others
 		return{ { w - 1, h - 1 },{ w, h - 1 },{ w + 1, h - 1 },{ w + 1, h },{ w - 1, h } };
 
 	if (w == 0)
 	{
 		if (h == 0)				   return{ { w + 1, h } }; // upper-left corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w + 1, h },{ w + 1, h - 1 },{ w, h - 1 } }; // down-left corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w + 1, h },{ w + 1, h - 1 },{ w, h - 1 } }; // down-left corner
 		return{ { w, h - 1 },{ w + 1, h - 1 },{ w + 1, h } }; // left side
 	}
 
-	if ((w + 1) == MAP_WIDTH)
+	if ((w + 1) == CELL_WIDTH_AMOUNT)
 	{
 		if (h == 0)				   return{ { w - 1, h } }; // upper-right corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // down-right corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // down-right corner
 		return{ { w, h - 1 },{ w - 1, h - 1 },{ w - 1, h } }; // right side
 	}
 	else
 	{
 		if (h == 0) return{ { w - 1, h },{ w + 1, h } }; // upper side
-		if ((h + 1) == MAP_HEIGHT)
+		if ((h + 1) == CELL_HEIGHT_AMOUNT)
 			return{ { w - 1, h },{ w + 1, h },{ w - 1, h - 1 },{ w, h - 1 },{ w + 1, h - 1 } }; // down side
 	}
 }
 Engine::Neighbours Engine::PentaDown(unsigned w, unsigned h, Map& map)
 {
-	if (w != 0 && (w + 1) != MAP_WIDTH && h != 0 && (h + 1) != MAP_HEIGHT) // all others
+	if (w != 0 && (w + 1) != CELL_WIDTH_AMOUNT && h != 0 && (h + 1) != CELL_HEIGHT_AMOUNT) // all others
 		return{ { w + 1, h },{ w + 1, h + 1 },{ w, h + 1 },{ w - 1, h + 1 },{ w - 1, h } };
 
 	if (w == 0)
 	{
 		if (h == 0)				   return{ { w + 1, h },{ w + 1, h + 1 },{ w, h + 1 } }; // upper-left corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w + 1, h } }; // down-left corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w + 1, h } }; // down-left corner
 		return{ { w, h + 1 },{ w + 1, h },{ w + 1, h + 1 } }; // left side
 	}
 
-	if ((w + 1) == MAP_WIDTH)
+	if ((w + 1) == CELL_WIDTH_AMOUNT)
 	{
 		if (h == 0)				   return{ { w - 1, h },{ w - 1, h + 1 },{ w, h + 1 } }; // upper-right corner
-		if ((h + 1) == MAP_HEIGHT) return{ { w - 1, h } }; // down-right corner
+		if ((h + 1) == CELL_HEIGHT_AMOUNT) return{ { w - 1, h } }; // down-right corner
 		return{ { w, h + 1 },{ w - 1, h },{ w - 1, h + 1 } }; // right side
 	}
 	else
 	{
 		if (h == 0) return{ { w - 1, h },{ w + 1, h },{ w - 1, h + 1 },{ w, h + 1 },{ w + 1, h + 1 } }; // upper side
-		if ((h + 1) == MAP_HEIGHT)
+		if ((h + 1) == CELL_HEIGHT_AMOUNT)
 			return{ { w - 1, h },{ w + 1, h } }; // down side
 	}
 }

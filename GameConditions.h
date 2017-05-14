@@ -57,8 +57,11 @@ namespace GameData
 
 struct GameConditions
 {
-	static Games choosed_game;
+	Games choosed_game;
 	GameState game_state;
+	void setGameToUpdate() { game_state = GameState::Update; }
+	void setGameToStart() { game_state = GameState::Start; }
+	void setGameToPause() { game_state = GameState::Pause; }
 };
 
 struct GameOfLifeConditions
