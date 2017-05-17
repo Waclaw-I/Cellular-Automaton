@@ -29,91 +29,93 @@ int main()
 	srand(time(NULL));
 	GameConditions game_conditions;
 	game_conditions.game_state = GameState::Start;
-	game_conditions.choosed_game = Games::GameOfLife;
-
+	game_conditions.choosed_game = Games::MainMenu;
 	seeds_growth_conditions.seed_randomization = SeedRandomization::Clicked;
 	seeds_growth_conditions.boundary_condition = BoundaryCondition::Unperiodic;
 	seeds_growth_conditions.neighbour_type = NeighbourType::HexRandom;
 	game_of_life_conditions.cells_initialization = CellsInitialization::Clicked;
-
-	auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Game");
 	Map game_map = map_generator.createNewMap(CELL_WIDTH_AMOUNT, CELL_HEIGHT_AMOUNT);
-	
 
-
-	while (game_conditions.choosed_game == Games::GameOfLife)
+	while (game_conditions.choosed_game != Games::Exit)
 	{
-		while (game_conditions.game_state == GameState::Start)
+
+		auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Game");
+		std::vector<GUIObject> main_menu_GUI = GUI_creator.createMainMenuGUI(game_conditions);
+
+		while (game_conditions.choosed_game == Games::MainMenu)
 		{
-			if (game_of_life_conditions.cells_initialization == CellsInitialization::Clicked)
+			displayer.clearWindow(window);
+			displayer.drawGUIonScreen(main_menu_GUI, window);
+			displayer.displayWindow(window);
+			displayer.listenToGUI(main_menu_GUI, window);
+		}
+
+		while (game_conditions.choosed_game == Games::GameOfLife)
+		{
+			while (game_conditions.game_state == GameState::Start)
 			{
-				cell_populator.addCellByClick(game_map, displayer, window);
-				if (CellPopulator::ACTUAL_GROUP == 5) //CREATE A START BUTTON
+				if (game_of_life_conditions.cells_initialization == CellsInitialization::Clicked)
 				{
-					game_of_life_conditions.cells_initialization = CellsInitialization::Done;
-					game_conditions.game_state = GameState::Update;
+					cell_populator.addCellByClick(game_map, displayer, window);
+					if (CellPopulator::ACTUAL_GROUP == 5) //CREATE A START BUTTON
+					{
+						game_of_life_conditions.cells_initialization = CellsInitialization::Done;
+						game_conditions.game_state = GameState::Update;
+					}
 				}
+				displayer.clearWindow(window);
+				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.displayWindow(window);
 			}
-			displayer.clearWindow(window);
-			displayer.drawMap(game_map, window, game_conditions.choosed_game);
-			displayer.displayWindow(window);
-		}
 
-		while (game_conditions.game_state == GameState::Update)
-		{
-			displayer.clearWindow(window);
-			GameData::map_history.push_back(engine.designateNextFrame(game_map));
-			game_map = GameData::map_history.back();
-			displayer.drawMap(game_map, window, game_conditions.choosed_game);
-			displayer.displayWindow(window);
-			engine.Wait();
-
-		}
-	}
-	
-
-	while (game_conditions.choosed_game == Games::SeedsGrowth)
-	{
-		auto dupsko = &GameConditions::setGameToUpdate;
-		std::vector<GUIObject> start_GUI = GUI_creator.createSeedsGrowthStartGUI();
-		start_GUI.front().setCallback([&game_conditions]() { game_conditions.setGameToUpdate(); });
-		while (game_conditions.game_state == GameState::Start)
-		{
-			if (seeds_growth_conditions.seed_randomization == SeedRandomization::Clicked)
+			while (game_conditions.game_state == GameState::Update)
 			{
-				cell_populator.addCellByClick(game_map, displayer, window);
-				if (CellPopulator::ACTUAL_GROUP == 10)
+				displayer.clearWindow(window);
+				GameData::map_history.push_back(engine.designateNextFrame(game_map));
+				game_map = GameData::map_history.back();
+				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.displayWindow(window);
+				engine.Wait();
+
+			}
+		}
+
+		while (game_conditions.choosed_game == Games::SeedsGrowth)
+		{
+			std::vector<GUIObject> start_GUI = GUI_creator.createSeedsGrowthStartGUI();
+			start_GUI.front().setCallback([&game_conditions]() { game_conditions.setGameToUpdate(); });
+			while (game_conditions.game_state == GameState::Start)
+			{
+				if (seeds_growth_conditions.seed_randomization == SeedRandomization::Clicked)
 				{
-					//seeds_growth_conditions.seed_randomization = SeedRandomization::Done;
-					//game_conditions.game_state = GameState::Update;
+					cell_populator.addCellByClick(game_map, displayer, window);
+					if (CellPopulator::ACTUAL_GROUP == 10)
+					{
+						//seeds_growth_conditions.seed_randomization = SeedRandomization::Done;
+						//game_conditions.game_state = GameState::Update;
+					}
 				}
+				displayer.clearWindow(window);
+				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.drawGUIonScreen(start_GUI, window);
+				displayer.displayWindow(window);
+				displayer.listenToGUI(start_GUI, window);
 			}
-			displayer.clearWindow(window);
-			displayer.drawMap(game_map, window, game_conditions.choosed_game);
-			displayer.drawGUIonScreen(start_GUI, window);
-			displayer.displayWindow(window);
-			for (auto& gui_object : start_GUI)
+
+			while (game_conditions.game_state == GameState::Update)
 			{
-				if (displayer.lookForInput(gui_object, window))
-					gui_object.onClick();
+				engine.Wait();
+				displayer.clearWindow(window);
+				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.displayWindow(window);
+				GameData::map_history.push_back(engine.makeSeedsGrow(game_map,
+					seeds_growth_conditions.neighbour_type,
+					seeds_growth_conditions.boundary_condition));
+				game_map = GameData::map_history.back();
+
+
 			}
 		}
 
-		while (game_conditions.game_state == GameState::Update)
-		{
-			engine.Wait();
-			displayer.clearWindow(window);
-			displayer.drawMap(game_map, window, game_conditions.choosed_game);
-			displayer.displayWindow(window);
-			GameData::map_history.push_back(engine.makeSeedsGrow(game_map,
-															     seeds_growth_conditions.neighbour_type,
-																 seeds_growth_conditions.boundary_condition));
-			game_map = GameData::map_history.back();
-			
-			
-		}
 	}
-
-
-	std::cin.get();
 }

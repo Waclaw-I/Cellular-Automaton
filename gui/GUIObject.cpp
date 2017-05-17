@@ -1,6 +1,6 @@
 #include "GUIObject.h"
 
-GUIObject::GUIObject(sf::Texture& texture) :
+GUIObject::GUIObject(sf::Drawable& texture) :
 	sprite(sf::Sprite(texture)),
 	scale_x(sprite.getScale().x),
 	scale_y(sprite.getScale().y)

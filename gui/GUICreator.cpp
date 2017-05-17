@@ -27,13 +27,27 @@ bool TexturesHolder::loadTextures()
 	TexturesHolder::buttons["resume"] = getTexture("Images/Buttons/b_resume.png");
 	TexturesHolder::buttons["save_to_file"] = getTexture("Images/Buttons/b_save_to_file.png");
 	TexturesHolder::buttons["seeds_growth"] = getTexture("Images/Buttons/b_seeds_growth.png");
-	TexturesHolder::buttons["game_of_life"] = getTexture("Images/Buttons/b_start.png");
+	TexturesHolder::buttons["game_of_life"] = getTexture("Images/Buttons/b_game_of_life.png");
 	TexturesHolder::buttons["|<<"] = getTexture("Images/Buttons/b_to_the_beginning.png");
 	TexturesHolder::buttons[">>|"] = getTexture("Images/Buttons/b_to_the_end.png");
 	TexturesHolder::buttons["pause"] = getTexture("Images/Buttons/b_pause.png");
 	TexturesHolder::buttons["start"] = getTexture("Images/Buttons/b_start.png");
 
 	return true;
+}
+
+std::vector<GUIObject> GUICreator::createMainMenuGUI(GameConditions& game_conditions)
+{
+	auto& callback = []() { std::cout << "Nacisnieto" << std::endl; }; // blank function
+	std::vector<GUIObject> GUI;
+	GUI.push_back(GUIButton(320, 100, TexturesHolder::buttons["game_of_life"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.choosed_game = Games::GameOfLife; });
+	GUI.push_back(GUIButton(320, 200, TexturesHolder::buttons["seeds_growth"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.choosed_game = Games::SeedsGrowth; });
+	GUI.push_back(GUIButton(410, 300, TexturesHolder::buttons["exit"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.choosed_game = Games::Exit; });
+
+	return GUI;
 }
 
 

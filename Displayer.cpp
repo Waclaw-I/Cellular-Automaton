@@ -110,6 +110,17 @@ bool Displayer::lookForInput(int x, int y , std::unique_ptr<sf::RenderWindow>& w
 	return false;
 }
 
+bool Displayer::listenToGUI(std::vector<GUIObject>& GUI, std::unique_ptr<sf::RenderWindow>& window)
+{
+	for (auto& GUI_object : GUI)
+	{
+		if (lookForInput(GUI_object, window))
+			GUI_object.onClick();
+	}
+
+	return true;
+}
+
 bool Displayer::lookForInput(GUIObject gui_object, std::unique_ptr<sf::RenderWindow>& window)
 {
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && GameData::MousePressed)

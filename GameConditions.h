@@ -1,9 +1,12 @@
 #pragma once
+#include "Resources.h"
 
 enum class Games
 {
+	MainMenu,
 	GameOfLife,
-	SeedsGrowth
+	SeedsGrowth,
+	Exit
 };
 
 enum class GameState
