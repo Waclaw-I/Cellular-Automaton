@@ -86,8 +86,9 @@ void Displayer::drawMap(const Map& map, std::unique_ptr<sf::RenderWindow>& windo
 		}
 }
 
-bool Displayer::lookForInput(int x, int y , std::unique_ptr<sf::RenderWindow>& window)
+bool Displayer::lookForInput(int x, int y , std::unique_ptr<sf::RenderWindow>& window, bool allowSwipe)
 {
+	if (allowSwipe) GameData::MousePressed = false;
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && GameData::MousePressed)
 		return false;
 	else

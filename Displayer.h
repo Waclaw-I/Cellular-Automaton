@@ -13,7 +13,7 @@ public:
 	void clearWindow(std::unique_ptr<sf::RenderWindow>& window);
 	void displayWindow(std::unique_ptr<sf::RenderWindow>& window);
 	void drawMap(const Map& map, std::unique_ptr<sf::RenderWindow>& window, Games choosed_game);
-	bool lookForInput(int x, int y, std::unique_ptr<sf::RenderWindow>& window);
+	bool lookForInput(int x, int y, std::unique_ptr<sf::RenderWindow>& window, bool allowSwipe);
 	bool listenToGUI(std::vector<GUIObject>& GUI, std::unique_ptr<sf::RenderWindow>& window);
 	void drawGUIonScreen(std::vector<GUIObject> GUI, std::unique_ptr<sf::RenderWindow>& window);
 

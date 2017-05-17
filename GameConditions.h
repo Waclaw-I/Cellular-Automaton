@@ -68,9 +68,6 @@ struct GameConditions
 	SeedRandomization seed_randomization;
 	BoundaryCondition boundary_condition;
 	NeighbourType neighbour_type;
-	void setGameToUpdate() { game_state = GameState::Update; }
-	void setGameToStart() { game_state = GameState::Start; }
-	void setGameToPause() { game_state = GameState::Pause; }
 };
 
 struct GameOfLifeConditions

@@ -62,20 +62,18 @@ int main()
 
 		while (game_conditions.choosed_game == Games::GameOfLife)
 		{
+			game_conditions.neighbour_type = NeighbourType::Moore; // only viable for Game of Life
+			std::vector<GUIObject> start_GUI = GUI_creator.createGameOfLifeStartGUI(game_conditions);
+			
 			while (game_conditions.game_state == GameState::Start)
 			{
-				if (game_of_life_conditions.cells_initialization == CellsInitialization::Clicked)
-				{
-					cell_populator.addCellByClick(game_map, displayer, window);
-					if (CellPopulator::ACTUAL_GROUP == 5) //CREATE A START BUTTON
-					{
-						game_of_life_conditions.cells_initialization = CellsInitialization::Done;
-						game_conditions.game_state = GameState::Update;
-					}
-				}
+				cell_populator.addCellByClick(game_map, displayer, window, true);
+
 				displayer.clearWindow(window);
 				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.drawGUIonScreen(start_GUI, window);
 				displayer.displayWindow(window);
+				displayer.listenToGUI(start_GUI, window);
 			}
 
 			while (game_conditions.game_state == GameState::Update)
@@ -107,12 +105,7 @@ int main()
 			{
 				if (seeds_growth_conditions.seed_randomization == SeedRandomization::Clicked)
 				{
-					cell_populator.addCellByClick(game_map, displayer, window);
-					if (CellPopulator::ACTUAL_GROUP == 10)
-					{
-						//seeds_growth_conditions.seed_randomization = SeedRandomization::Done;
-						//game_conditions.game_state = GameState::Update;
-					}
+					cell_populator.addCellByClick(game_map, displayer, window, false);
 				}
 				displayer.clearWindow(window);
 				displayer.drawMap(game_map, window, game_conditions.choosed_game);

@@ -64,7 +64,7 @@ std::vector<GUIObject> GUICreator::createMainMenuGUI(GameConditions& game_condit
 
 std::vector<GUIObject> GUICreator::createGameOfLifeStartGUI(GameConditions& game_conditions)
 {
-	auto& callback = [&game_conditions]() { game_conditions.setGameToUpdate(); };
+	auto& callback = [&game_conditions]() { game_conditions.game_state = GameState::Update; };
 	std::vector<GUIObject> GUI;
 	GUI.push_back(GUIButton(650, 400, TexturesHolder::buttons["start"], callback, 1, 1));
 
@@ -72,7 +72,7 @@ std::vector<GUIObject> GUICreator::createGameOfLifeStartGUI(GameConditions& game
 }
 std::vector<GUIObject> GUICreator::createGameOfLifeUpdateGUI(GameConditions& game_conditions)
 {
-	auto& callback = [&game_conditions]() { game_conditions.setGameToUpdate(); };
+	auto& callback = [&game_conditions]() { game_conditions.game_state = GameState::Update; };
 	std::vector<GUIObject> GUI;
 	GUI.push_back(GUIButton(650, 400, TexturesHolder::buttons["start"], callback, 1, 1));
 
@@ -81,7 +81,7 @@ std::vector<GUIObject> GUICreator::createGameOfLifeUpdateGUI(GameConditions& gam
 
 std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI(GameConditions& game_conditions)
 {
-	auto& callback = [&game_conditions]() { game_conditions.setGameToUpdate(); };
+	auto& callback = [&game_conditions]() { game_conditions.game_state = GameState::Update; };
 	std::vector<GUIObject> GUI;
 	GUI.push_back(GUIButton(650, 400, TexturesHolder::buttons["start"], callback, 1, 1));
 
