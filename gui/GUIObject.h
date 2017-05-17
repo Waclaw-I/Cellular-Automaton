@@ -17,7 +17,7 @@ class GUIObject
 {
 public:
 	sf::Sprite sprite;
-	GUIObject(sf::Drawable& texture);
+	GUIObject(sf::Texture& texture);
 
 	void setPosition(int x, int y);
 	void setScale(double scale_x, double scale_y); // in order to modify sprites
