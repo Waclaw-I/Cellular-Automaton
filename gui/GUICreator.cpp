@@ -62,10 +62,26 @@ std::vector<GUIObject> GUICreator::createMainMenuGUI(GameConditions& game_condit
 	return GUI;
 }
 
+std::vector<GUIObject> GUICreator::createGameOfLifeStartGUI(GameConditions& game_conditions)
+{
+	auto& callback = [&game_conditions]() { game_conditions.setGameToUpdate(); };
+	std::vector<GUIObject> GUI;
+	GUI.push_back(GUIButton(650, 400, TexturesHolder::buttons["start"], callback, 1, 1));
+
+	return GUI;
+}
+std::vector<GUIObject> GUICreator::createGameOfLifeUpdateGUI(GameConditions& game_conditions)
+{
+	auto& callback = [&game_conditions]() { game_conditions.setGameToUpdate(); };
+	std::vector<GUIObject> GUI;
+	GUI.push_back(GUIButton(650, 400, TexturesHolder::buttons["start"], callback, 1, 1));
+
+	return GUI;
+}
 
 std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI(GameConditions& game_conditions)
 {
-	auto& callback = []() { std::cout << "Nacisnieto" << std::endl; }; // blank function
+	auto& callback = [&game_conditions]() { game_conditions.setGameToUpdate(); };
 	std::vector<GUIObject> GUI;
 	GUI.push_back(GUIButton(650, 400, TexturesHolder::buttons["start"], callback, 1, 1));
 
@@ -101,6 +117,21 @@ std::vector<GUIObject> GUICreator::createNeighbourhoodSettingsGUI(GameConditions
 {
 	auto& callback = []() {};
 	std::vector<GUIObject> GUI;
+	GUI.push_back(GUIButton(200, 50, TexturesHolder::buttons["neumann"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.neighbour_type = NeighbourType::Neumann; });
+	GUI.push_back(GUIButton(210, 150, TexturesHolder::buttons["moore"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.neighbour_type = NeighbourType::Moore; });
+	GUI.push_back(GUIButton(160, 250, TexturesHolder::buttons["penta_random"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.neighbour_type = NeighbourType::PentaRandom; });
+	GUI.push_back(GUIButton(600, 50, TexturesHolder::buttons["hex_left"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.neighbour_type = NeighbourType::HexLeft; });
+	GUI.push_back(GUIButton(600, 150, TexturesHolder::buttons["hex_right"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.neighbour_type = NeighbourType::HexRight; });
+	GUI.push_back(GUIButton(600, 250, TexturesHolder::buttons["hex_random"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.neighbour_type = NeighbourType::HexRandom; });
+
+	GUI.push_back(GUIButton(400, 370, TexturesHolder::buttons["back"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.boundary_condition = BoundaryCondition::None; });
 
 	return GUI;
 }

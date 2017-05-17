@@ -31,7 +31,7 @@ int main()
 	game_conditions.game_state = GameState::Start;
 	game_conditions.choosed_game = Games::MainMenu;
 	game_conditions.boundary_condition = BoundaryCondition::None;
-	game_conditions.neighbour_type = NeighbourType::Moore;
+	game_conditions.neighbour_type = NeighbourType::None;
 	seeds_growth_conditions.seed_randomization = SeedRandomization::Clicked;
 	seeds_growth_conditions.boundary_condition = BoundaryCondition::None;
 	seeds_growth_conditions.neighbour_type = NeighbourType::None;
@@ -90,11 +90,20 @@ int main()
 			}
 		}
 
-		while (game_conditions.choosed_game == Games::SeedsGrowth)
+		while (game_conditions.choosed_game == Games::SeedsGrowth && game_conditions.boundary_condition != BoundaryCondition::None)
 		{
+
+			std::vector<GUIObject> neighbourhood_GUI = GUI_creator.createNeighbourhoodSettingsGUI(game_conditions);
+			while (game_conditions.neighbour_type == NeighbourType::None && game_conditions.boundary_condition != BoundaryCondition::None)
+			{
+				displayer.clearWindow(window);
+				displayer.drawGUIonScreen(neighbourhood_GUI, window);
+				displayer.displayWindow(window);
+				displayer.listenToGUI(neighbourhood_GUI, window);
+			}
+
 			std::vector<GUIObject> start_GUI = GUI_creator.createSeedsGrowthStartGUI(game_conditions);
-			start_GUI.front().setCallback([&game_conditions]() { game_conditions.setGameToUpdate(); });
-			while (game_conditions.game_state == GameState::Start)
+			while (game_conditions.game_state == GameState::Start && game_conditions.boundary_condition != BoundaryCondition::None)
 			{
 				if (seeds_growth_conditions.seed_randomization == SeedRandomization::Clicked)
 				{

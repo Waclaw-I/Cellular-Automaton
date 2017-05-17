@@ -20,4 +20,16 @@ void CellPopulator::addCellByClick(Map& map, Displayer& displayer, std::unique_p
 	}
 }
 
+void CellPopulator::AddCellByRandom(Map& map, Displayer& displayer, std::unique_ptr<sf::RenderWindow>& window, int amount)
+{
+	for (int k = 0; k < amount; ++k)
+	{
+		int i = rand() % map.size();
+		int j = rand() % map[0].size();
+
+		map[i][j].alive = true;
+		map[i][j].group = ACTUAL_GROUP++;
+	}
+}
+
 
