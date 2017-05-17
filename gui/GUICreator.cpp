@@ -32,6 +32,18 @@ bool TexturesHolder::loadTextures()
 	TexturesHolder::buttons[">>|"] = getTexture("Images/Buttons/b_to_the_end.png");
 	TexturesHolder::buttons["pause"] = getTexture("Images/Buttons/b_pause.png");
 	TexturesHolder::buttons["start"] = getTexture("Images/Buttons/b_start.png");
+	TexturesHolder::buttons["clicked"] = getTexture("Images/Buttons/b_clicked.png");
+	TexturesHolder::buttons["equal"] = getTexture("Images/Buttons/b_equal.png");
+	TexturesHolder::buttons["hex_left"] = getTexture("Images/Buttons/b_hex_left.png");
+	TexturesHolder::buttons["hex_right"] = getTexture("Images/Buttons/b_hex_right.png");
+	TexturesHolder::buttons["hex_random"] = getTexture("Images/Buttons/b_hex_random.png");
+	TexturesHolder::buttons["moore"] = getTexture("Images/Buttons/b_Moore.png");
+	TexturesHolder::buttons["neumann"] = getTexture("Images/Buttons/b_Neumann.png");
+	TexturesHolder::buttons["penta_random"] = getTexture("Images/Buttons/b_penta_random.png");
+	TexturesHolder::buttons["random"] = getTexture("Images/Buttons/b_random.png");
+	TexturesHolder::buttons["random_r"] = getTexture("Images/Buttons/b_random_r.png");
+	TexturesHolder::buttons["periodic"] = getTexture("Images/Buttons/b_periodic.png");
+	TexturesHolder::buttons["non_periodic"] = getTexture("Images/Buttons/b_non_periodic.png");
 
 	return true;
 }
@@ -51,7 +63,7 @@ std::vector<GUIObject> GUICreator::createMainMenuGUI(GameConditions& game_condit
 }
 
 
-std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI()
+std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI(GameConditions& game_conditions)
 {
 	auto& callback = []() { std::cout << "Nacisnieto" << std::endl; }; // blank function
 	std::vector<GUIObject> GUI;
@@ -61,7 +73,7 @@ std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI()
 
 }
 
-std::vector<GUIObject> GUICreator::createSeedsGrowthUpdateGUI()
+std::vector<GUIObject> GUICreator::createSeedsGrowthUpdateGUI(GameConditions& game_conditions)
 {
 	auto& callback = []() {};
 	std::vector<GUIObject> GUI;
@@ -70,7 +82,27 @@ std::vector<GUIObject> GUICreator::createSeedsGrowthUpdateGUI()
 	GUI.push_back(GUIButton(600, 210, TexturesHolder::buttons["resume"], callback, 1, 1));
 
 	return GUI;
+}
 
+std::vector<GUIObject> GUICreator::createPeriodicSettingsGUI(GameConditions& game_conditions)
+{
+	auto& callback = []() {};
+	std::vector<GUIObject> GUI;
+	GUI.push_back(GUIButton(400, 100, TexturesHolder::buttons["periodic"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.boundary_condition = BoundaryCondition::Periodic; });
+	GUI.push_back(GUIButton(375, 200, TexturesHolder::buttons["non_periodic"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.boundary_condition = BoundaryCondition::Unperiodic; });
+	GUI.push_back(GUIButton(420, 300, TexturesHolder::buttons["back"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.choosed_game = Games::MainMenu; });
+
+	return GUI;
+}
+std::vector<GUIObject> GUICreator::createNeighbourhoodSettingsGUI(GameConditions& game_conditions)
+{
+	auto& callback = []() {};
+	std::vector<GUIObject> GUI;
+
+	return GUI;
 }
 //std::vector<GUIObject> GUICreator::createGameOfLifeGUI()
 //{

@@ -6,8 +6,8 @@ class Engine
 {
 	using Neighbours = std::vector<std::pair<unsigned, unsigned>>;
 public:
-	Map designateNextFrame(Map& map); // GameOfLife
-	Map makeSeedsGrow(Map& map, NeighbourType neighbour_type, BoundaryCondition boundary_cond);
+	Map designateNextFrame(Map& map, NeighbourType neighbourhood, BoundaryCondition boundary_cond); // GameOfLife
+	Map makeSeedsGrow(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond);
 	void Wait();
 
 private:

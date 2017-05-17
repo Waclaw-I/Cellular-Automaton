@@ -11,8 +11,3 @@ GUIButton::GUIButton(int x, int y, sf::Texture& texture, std::function<void()> c
 
 	this->updateSprite();
 }
-
-//GUIButton::GUIButton(int x, int y, sf::Text, std::function<void()> callback, double scale_x, double scale_y)
-//{
-//
-//}

@@ -16,10 +16,12 @@ class GUICreator
 {
 public:
 	std::vector<GUIObject> createMainMenuGUI(GameConditions& game_conditions);
-	std::vector<GUIObject> createSeedsGrowthUpdateGUI();
-	std::vector<GUIObject> createSeedsGrowthStartGUI();
-	std::vector<GUIObject> createGameOfLifeStartGUI();
-	std::vector<GUIObject> createGameOfLifeUpdateGUI();
+	std::vector<GUIObject> createPeriodicSettingsGUI(GameConditions& game_conditions);
+	std::vector<GUIObject> createNeighbourhoodSettingsGUI(GameConditions& game_conditions);
+	std::vector<GUIObject> createSeedsGrowthUpdateGUI(GameConditions& game_conditions);
+	std::vector<GUIObject> createSeedsGrowthStartGUI(GameConditions& game_conditions);
+	std::vector<GUIObject> createGameOfLifeStartGUI(GameConditions& game_conditions);
+	std::vector<GUIObject> createGameOfLifeUpdateGUI(GameConditions& game_conditions);
 private:
 
 };

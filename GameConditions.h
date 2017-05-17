@@ -24,12 +24,14 @@ enum class NeighbourType
 	HexRight,
 	HexRandom,
 	PentaRandom,
+	None
 };
 
 enum class BoundaryCondition
 {
 	Periodic,
-	Unperiodic
+	Unperiodic,
+	None
 };
 
 enum class SeedRandomization
@@ -62,6 +64,10 @@ struct GameConditions
 {
 	Games choosed_game;
 	GameState game_state;
+	CellsInitialization cells_initialization;
+	SeedRandomization seed_randomization;
+	BoundaryCondition boundary_condition;
+	NeighbourType neighbour_type;
 	void setGameToUpdate() { game_state = GameState::Update; }
 	void setGameToStart() { game_state = GameState::Start; }
 	void setGameToPause() { game_state = GameState::Pause; }

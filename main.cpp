@@ -30,9 +30,11 @@ int main()
 	GameConditions game_conditions;
 	game_conditions.game_state = GameState::Start;
 	game_conditions.choosed_game = Games::MainMenu;
+	game_conditions.boundary_condition = BoundaryCondition::None;
+	game_conditions.neighbour_type = NeighbourType::Moore;
 	seeds_growth_conditions.seed_randomization = SeedRandomization::Clicked;
-	seeds_growth_conditions.boundary_condition = BoundaryCondition::Unperiodic;
-	seeds_growth_conditions.neighbour_type = NeighbourType::HexRandom;
+	seeds_growth_conditions.boundary_condition = BoundaryCondition::None;
+	seeds_growth_conditions.neighbour_type = NeighbourType::None;
 	game_of_life_conditions.cells_initialization = CellsInitialization::Clicked;
 	Map game_map = map_generator.createNewMap(CELL_WIDTH_AMOUNT, CELL_HEIGHT_AMOUNT);
 
@@ -48,6 +50,14 @@ int main()
 			displayer.drawGUIonScreen(main_menu_GUI, window);
 			displayer.displayWindow(window);
 			displayer.listenToGUI(main_menu_GUI, window);
+		}
+		std::vector<GUIObject> boundary_GUI = GUI_creator.createPeriodicSettingsGUI(game_conditions);
+		while (game_conditions.boundary_condition == BoundaryCondition::None && game_conditions.choosed_game != Games::MainMenu)
+		{
+			displayer.clearWindow(window);
+			displayer.drawGUIonScreen(boundary_GUI, window);
+			displayer.displayWindow(window);
+			displayer.listenToGUI(boundary_GUI, window);
 		}
 
 		while (game_conditions.choosed_game == Games::GameOfLife)
@@ -71,7 +81,7 @@ int main()
 			while (game_conditions.game_state == GameState::Update)
 			{
 				displayer.clearWindow(window);
-				GameData::map_history.push_back(engine.designateNextFrame(game_map));
+				GameData::map_history.push_back(engine.designateNextFrame(game_map, game_conditions.neighbour_type, game_conditions.boundary_condition));
 				game_map = GameData::map_history.back();
 				displayer.drawMap(game_map, window, game_conditions.choosed_game);
 				displayer.displayWindow(window);
@@ -82,7 +92,7 @@ int main()
 
 		while (game_conditions.choosed_game == Games::SeedsGrowth)
 		{
-			std::vector<GUIObject> start_GUI = GUI_creator.createSeedsGrowthStartGUI();
+			std::vector<GUIObject> start_GUI = GUI_creator.createSeedsGrowthStartGUI(game_conditions);
 			start_GUI.front().setCallback([&game_conditions]() { game_conditions.setGameToUpdate(); });
 			while (game_conditions.game_state == GameState::Start)
 			{
@@ -109,8 +119,8 @@ int main()
 				displayer.drawMap(game_map, window, game_conditions.choosed_game);
 				displayer.displayWindow(window);
 				GameData::map_history.push_back(engine.makeSeedsGrow(game_map,
-					seeds_growth_conditions.neighbour_type,
-					seeds_growth_conditions.boundary_condition));
+					game_conditions.neighbour_type,
+					game_conditions.boundary_condition));
 				game_map = GameData::map_history.back();
 
 

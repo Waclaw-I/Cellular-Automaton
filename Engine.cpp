@@ -21,7 +21,7 @@ unsigned Engine::getNeighboursAmount(unsigned w, unsigned h, Map& map, Neighbour
 	return neighbours_amount;
 }
 
-Map Engine::designateNextFrame(Map& map) // for GameOfLife
+Map Engine::designateNextFrame(Map& map, NeighbourType neighbourhood, BoundaryCondition boundary_cond) // for GameOfLife
 {
 	Map new_map(map);
 	for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
@@ -30,7 +30,7 @@ Map Engine::designateNextFrame(Map& map) // for GameOfLife
 		{
 			auto& old_cell = map[i][j];
 			auto& new_cell = new_map[i][j];
-			auto& neighbours = getNeighbours(j, i, map, NeighbourType::Moore, BoundaryCondition::Periodic);
+			auto& neighbours = getNeighbours(j, i, map, neighbourhood, boundary_cond);
 			unsigned neighbours_amount = getNeighboursAmount(j, i, map, neighbours);
 			if (neighbours_amount < 2 || neighbours_amount > 3)
 			{
@@ -47,7 +47,7 @@ Map Engine::designateNextFrame(Map& map) // for GameOfLife
 	return new_map;
 }
 
-Map Engine::makeSeedsGrow(Map& map, NeighbourType neighbour_type, BoundaryCondition boundary_cond)
+Map Engine::makeSeedsGrow(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond)
 {
 	Map new_map(map);
 	for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
