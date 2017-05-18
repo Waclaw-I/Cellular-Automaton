@@ -18,6 +18,8 @@ constexpr unsigned WINDOW_HEIGHT = 500;
 constexpr unsigned CELL_WIDTH = MAP_WIDTH / CELL_WIDTH_AMOUNT;
 constexpr unsigned CELL_HEIGHT = MAP_HEIGHT / CELL_HEIGHT_AMOUNT;
 constexpr unsigned MAX_GROUPS = 30;
+constexpr unsigned RANGE = 5;
+constexpr unsigned RANDOM_R_TRIES = 3000;
 
 using MyColor = std::array<unsigned char, 3>;
 

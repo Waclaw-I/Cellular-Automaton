@@ -52,7 +52,7 @@ int main()
 			displayer.listenToGUI(main_menu_GUI, window);
 		}
 		std::vector<GUIObject> boundary_GUI = GUI_creator.createPeriodicSettingsGUI(game_conditions);
-		while (game_conditions.boundary_condition == BoundaryCondition::None && game_conditions.choosed_game != Games::MainMenu)
+		while (game_conditions.boundary_condition == BoundaryCondition::None && game_conditions.choosed_game != Games::MainMenu && game_conditions.choosed_game != Games::Exit)
 		{
 			displayer.clearWindow(window);
 			displayer.drawGUIonScreen(boundary_GUI, window);
@@ -100,10 +100,12 @@ int main()
 				displayer.listenToGUI(neighbourhood_GUI, window);
 			}
 
-			std::vector<GUIObject> start_GUI = GUI_creator.createSeedsGrowthStartGUI(game_conditions);
-			while (game_conditions.game_state == GameState::Start && game_conditions.boundary_condition != BoundaryCondition::None)
+			std::vector<GUIObject> start_GUI = GUI_creator.createSeedsGrowthStartGUI(game_conditions, game_map, engine, cell_populator, displayer, window);
+			while (game_conditions.game_state == GameState::Start &&
+				   game_conditions.boundary_condition != BoundaryCondition::None &&
+				   game_conditions.choosed_game != Games::Exit)
 			{
-				if (seeds_growth_conditions.seed_randomization == SeedRandomization::Clicked)
+				if (game_conditions.seed_randomization == SeedRandomization::Clicked)
 				{
 					cell_populator.addCellByClick(game_map, displayer, window, false);
 				}

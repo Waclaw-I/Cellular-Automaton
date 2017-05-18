@@ -3,4 +3,4 @@
 unsigned Cell::amount = 0;
 
 Cell::Cell() : 
-	id(++amount), alive(false), group(0) {}
+	id(++amount), alive(false), in_range(false), group(0) {}

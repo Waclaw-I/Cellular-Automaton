@@ -8,6 +8,17 @@ void Engine::Wait()
 	Sleep(1000 / GameData::game_speed); // windows only 
 }
 
+void Engine::resetMap(Map& map)
+{
+	for (auto& row : map)
+	{
+		for (auto& cell : row)
+		{
+			cell.alive = false;
+			cell.group = 0;
+		}
+	}
+}
 
 unsigned Engine::getNeighboursAmount(unsigned w, unsigned h, Map& map, Neighbours neighbours)
 {

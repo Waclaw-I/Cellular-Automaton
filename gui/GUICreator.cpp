@@ -79,12 +79,41 @@ std::vector<GUIObject> GUICreator::createGameOfLifeUpdateGUI(GameConditions& gam
 	return GUI;
 }
 
-std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI(GameConditions& game_conditions)
+std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI(GameConditions& game_conditions,
+	Map& game_map,
+	Engine& engine,
+	CellPopulator& cell_populator,
+	Displayer& displayer,
+	std::unique_ptr<sf::RenderWindow>& window)
 {
-	auto& callback = [&game_conditions]() { game_conditions.game_state = GameState::Update; };
-	std::vector<GUIObject> GUI;
-	GUI.push_back(GUIButton(650, 400, TexturesHolder::buttons["start"], callback, 1, 1));
+	auto random_cells = [&game_map, &window, &engine, &cell_populator, &displayer, &game_conditions]() {
+		game_conditions.seed_randomization = SeedRandomization::Random;
+		engine.resetMap(game_map);
+		cell_populator.addCellByRandom(game_map, displayer, window, MAX_GROUPS);
+	};
 
+	auto cells_equally = [&game_map, &window, &engine, &cell_populator, &displayer, &game_conditions]() {
+		game_conditions.seed_randomization = SeedRandomization::Equal;
+		engine.resetMap(game_map);
+		cell_populator.addCellEqually(game_map, displayer, window, MAX_GROUPS);
+	};
+
+	auto cells_random_r = [&game_map, &window, &engine, &cell_populator, &displayer, &game_conditions]() {
+		game_conditions.seed_randomization = SeedRandomization::Random_R;
+		engine.resetMap(game_map);
+		cell_populator.addCellRandom_R(game_map, displayer, window, RANGE, game_conditions);
+	};
+	auto& callback = []() { std::cout << "Nacisnieto" << std::endl; }; // blank function
+	std::vector<GUIObject> GUI;
+	GUI.push_back(GUIButton(650, 10, TexturesHolder::buttons["start"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.game_state = GameState::Update; });
+	GUI.push_back(GUIButton(610, 110, TexturesHolder::buttons["random"], random_cells, 1, 1));
+	GUI.push_back(GUIButton(610, 210, TexturesHolder::buttons["clicked"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions, &engine, &game_map]() { 
+		engine.resetMap(game_map);
+		game_conditions.seed_randomization = SeedRandomization::Clicked; });
+	GUI.push_back(GUIButton(610, 310, TexturesHolder::buttons["random_r"], cells_random_r, 1, 1));
+	GUI.push_back(GUIButton(610, 410, TexturesHolder::buttons["equal"], cells_equally, 1, 1));
 	return GUI;
 
 }
