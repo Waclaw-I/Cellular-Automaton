@@ -9,6 +9,7 @@ public:
 	Map designateNextFrame(Map& map, NeighbourType neighbourhood, BoundaryCondition boundary_cond); // GameOfLife
 	Map makeSeedsGrow(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond);
 	void resetMap(Map& map);
+	bool isMapFull(Map& map);
 	void Wait();
 
 private:

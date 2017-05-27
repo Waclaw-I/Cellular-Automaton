@@ -126,8 +126,12 @@ int main()
 					game_conditions.neighbour_type,
 					game_conditions.boundary_condition));
 				game_map = GameData::map_history.back();
+				if (engine.isMapFull(game_map)) game_conditions.game_state = GameState::Crystallization;
+			}
 
-
+			while (game_conditions.game_state == GameState::Crystallization)
+			{
+				std::cout << "KRYSTALIZACJA";
 			}
 		}
 

@@ -13,7 +13,8 @@ enum class GameState
 {
 	Start,
 	Update,
-	Pause
+	Pause,
+	Crystallization
 };
 
 enum class NeighbourType

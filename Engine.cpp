@@ -20,6 +20,18 @@ void Engine::resetMap(Map& map)
 	}
 }
 
+bool Engine::isMapFull(Map& map)
+{
+	for (auto& row : map)
+	{
+		for (auto& cell : row)
+		{
+			if (!cell.alive) return false;
+		}
+	}
+	return true;
+}
+
 unsigned Engine::getNeighboursAmount(unsigned w, unsigned h, Map& map, Neighbours neighbours)
 {
 	unsigned neighbours_amount = 0;

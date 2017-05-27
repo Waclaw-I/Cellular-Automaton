@@ -21,6 +21,8 @@ constexpr unsigned MAX_GROUPS = 30;
 constexpr unsigned RANGE = 5;
 constexpr unsigned RANDOM_R_TRIES = 3000;
 
+
+
 using MyColor = std::array<unsigned char, 3>;
 
 
