@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <math.h>
 #include <SFML\Graphics.hpp>
 
 #include "MapGenerator.h"
@@ -8,6 +8,7 @@
 #include "CellPopulator.h"
 #include "Engine.h"
 #include "gui/GUICreator.h"
+
 
 using namespace std;
 
@@ -129,9 +130,81 @@ int main()
 				if (engine.isMapFull(game_map)) game_conditions.game_state = GameState::Crystallization;
 			}
 
+			
+			unsigned time = 1;
+	
 			while (game_conditions.game_state == GameState::Crystallization)
 			{
-				std::cout << "KRYSTALIZACJA";
+				if (time < 201)
+				{
+					previous_Ro = Ro;
+					Ro = (A / B) + (1 - (A / B)) * std::pow(e, -B * (time / 1000.0));
+
+					for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
+					{
+						for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
+						{
+							auto deltaRo = Ro - game_map[i][j].my_ro;
+							double tempRo = deltaRo / static_cast<double>(CELL_AMOUNT);
+
+							game_map[i][j].my_ro = tempRo;
+
+							if (!game_map[i][j].crystalized)
+							{
+								if (engine.isCellOnEdge(game_map, i, j,
+									game_conditions.neighbour_type,
+									game_conditions.boundary_condition))
+								{
+									game_map[i][j].my_ro = tempRo * 0.8;
+									leftover_Ro += tempRo * 0.2;
+								}
+								else
+								{
+									game_map[i][j].my_ro = tempRo * 0.2;
+									leftover_Ro += tempRo * 0.8;
+								}
+							}
+						}
+					}
+					auto ro_to_add = static_cast<double>(leftover_Ro / k);
+					int random_cells_amount = rand() % CELL_AMOUNT + 1;
+					for (int i = 0; i < random_cells_amount; ++i)
+					{
+						int random_i = rand() % CELL_HEIGHT_AMOUNT;
+						int random_j = rand() % CELL_WIDTH_AMOUNT;
+
+						if (engine.isCellOnEdge(game_map, random_i, random_j,
+							game_conditions.neighbour_type,
+							game_conditions.boundary_condition))
+						{
+							game_map[random_i][random_j].my_ro += ro_to_add;
+						}
+					}
+
+					for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
+					{
+						for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
+						{
+							if (game_map[i][j].isRoExceeded() && !game_map[i][j].crystalized)
+							{
+								game_map[i][j].crystalized = true;
+								game_map[i][j].group = rand() % MAX_GROUPS;
+								game_map[i][j].my_ro = 0;
+							}
+						}
+					}
+				}
+				displayer.clearWindow(window);
+				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.displayWindow(window);
+				GameData::map_history.push_back(engine.crystalize(game_map,
+					game_conditions.neighbour_type,
+					game_conditions.boundary_condition));
+
+				game_map = GameData::map_history.back();
+				engine.Wait();
+				++time;
+				
 			}
 		}
 

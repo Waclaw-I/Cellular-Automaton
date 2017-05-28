@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include <Windows.h>
 #include "GameConditions.h"
+#include <iostream>
 
 
 void Engine::Wait()
@@ -70,6 +71,20 @@ Map Engine::designateNextFrame(Map& map, NeighbourType neighbourhood, BoundaryCo
 	return new_map;
 }
 
+bool Engine::isCellOnEdge(Map& map, int i, int j, NeighbourType neighbour_type, BoundaryCondition boundary_cond)
+{
+	auto neighbours = getNeighbours(j, i, map, neighbour_type, boundary_cond);
+	auto group = map[i][j].group;
+
+	bool onEdge = false;
+	for (auto& neighbour : neighbours)
+	{
+		if (group != map[neighbour.second][neighbour.first].group) onEdge = true;
+		if (map[neighbour.second][neighbour.first].crystalized) return false;
+	}
+	return onEdge;
+}
+
 Map Engine::makeSeedsGrow(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond)
 {
 	Map new_map(map);
@@ -97,7 +112,34 @@ Map Engine::makeSeedsGrow(Map& map, NeighbourType& neighbour_type, BoundaryCondi
 	return new_map;
 }
 
-
+Map Engine::crystalize(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond)
+{
+	Map new_map(map);
+	for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
+	{
+		for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
+		{
+			auto& old_cell = map[i][j];
+			auto& neighbours = getNeighbours(j, i, map, neighbour_type, boundary_cond);
+			{
+				if (old_cell.alive && old_cell.crystalized) 
+					for (auto& neighbour : neighbours)
+					{
+						if (map[neighbour.second][neighbour.first].crystalized)
+						{
+							continue;
+						}
+						else
+						{
+							new_map[neighbour.second][neighbour.first].crystalized = true;
+							new_map[neighbour.second][neighbour.first].group = old_cell.group;
+						}
+					}
+			}
+		}
+	}
+	return new_map;
+}
 
 
 
