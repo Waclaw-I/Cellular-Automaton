@@ -10,7 +10,8 @@ Cell::Cell() :
 	in_range(false),
 	group(0),
 	crystalized(false),
-	my_ro(0) {}
+	my_ro(0),
+	energy(0) {}
 
 
 bool Cell::isRoExceeded()

@@ -6,7 +6,7 @@
 
 void Engine::Wait()
 {
-	Sleep(1000 / GameData::game_speed); // windows only 
+	Sleep(1000 / game_speed); // windows only 
 }
 
 void Engine::resetMap(Map& map)
@@ -141,7 +141,39 @@ Map Engine::crystalize(Map& map, NeighbourType& neighbour_type, BoundaryConditio
 	return new_map;
 }
 
+void Engine::energize(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond)
+{
+	for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
+	{
+		for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
+		{
+			auto& neighbours = getNeighbours(j, i, map, neighbour_type, boundary_cond);
+			for (auto& neighbour : neighbours)
+			{
+				if (map[i][j].group != map[neighbour.second][neighbour.first].group) map[i][j].energy++;
+			}
+		}
+	}
+}
 
+void Engine::energizeOne(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond, int i, int j, int colors)
+{
+	auto new_group = rand() % colors;
+	unsigned energy = 0;
+	auto& neighbours = getNeighbours(j, i, map, neighbour_type, boundary_cond);
+
+	for (auto& neighbour : neighbours)
+	{
+		if (new_group != map[neighbour.second][neighbour.first].group) energy++;
+	}
+
+	if (energy < map[i][j].energy)
+	{
+		map[i][j].group = new_group;
+		map[i][j].energy = energy;
+	}
+	
+}
 
 Engine::Neighbours Engine::PeriodicMoore(unsigned w, unsigned h, Map& map)
 {

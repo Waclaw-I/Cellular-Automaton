@@ -6,6 +6,7 @@ enum class Games
 	MainMenu,
 	GameOfLife,
 	SeedsGrowth,
+	MonteCarlo,
 	Exit
 };
 

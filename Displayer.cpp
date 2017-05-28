@@ -49,14 +49,27 @@ void Displayer::displayWindow(std::unique_ptr<sf::RenderWindow>& window)
 	}
 }
 
-void Displayer::drawMap(const Map& map, std::unique_ptr<sf::RenderWindow>& window, Games choosed_game)
+void Displayer::resetGraphicMap()
+{
+	for (int i = 0; i < cells_representation.size(); ++i)
+	{
+		auto&& row_size = cells_representation[i].size();
+		for (int j = 0; j < row_size; ++j)
+		{
+			cells_representation[i][j].setFillColor(sf::Color::White);
+		}
+	}
+}
+
+
+void Displayer::initializeGraphicMap(const Map& map, std::unique_ptr<sf::RenderWindow>& window, Games choosed_game)
 {
 	for (int i = 0; i < map.size(); ++i)
 	{
 		auto&& row_size = map[i].size();
 		for (int j = 0; j < row_size; ++j)
 		{
-			if (choosed_game == Games::SeedsGrowth)
+			if (choosed_game == Games::SeedsGrowth || choosed_game == Games::MonteCarlo)
 			{
 
 				if (map[i][j].alive)
@@ -79,6 +92,26 @@ void Displayer::drawMap(const Map& map, std::unique_ptr<sf::RenderWindow>& windo
 			}
 		}
 	}
+}
+
+void Displayer::updateGraphicCell(int i, int j, int color, std::unique_ptr<sf::RenderWindow>& window)
+{
+	if (color == -1) cells_representation[i][j].setFillColor(sf::Color::White);
+	else
+	{ 
+	cells_representation[i][j].setFillColor(sf::Color(colors[color][0],
+													  colors[color][1],
+													  colors[color][2]));
+	}
+	drawCell(cells_representation[i][j], window);
+}
+
+void Displayer::drawCell(sf::RectangleShape& cell, std::unique_ptr<sf::RenderWindow>& window)
+{
+	window->draw(cell);
+}
+void Displayer::drawMap(std::unique_ptr<sf::RenderWindow>& window)
+{
 	for (auto& row : cells_representation)
 		for (auto& cell : row)
 		{

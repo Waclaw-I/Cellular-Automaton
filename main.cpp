@@ -61,6 +61,55 @@ int main()
 			displayer.listenToGUI(boundary_GUI, window);
 		}
 
+		bool randomized = false;
+		while (game_conditions.choosed_game == Games::MonteCarlo && game_conditions.boundary_condition != BoundaryCondition::None)
+		{
+
+			std::vector<GUIObject> neighbourhood_GUI = GUI_creator.createNeighbourhoodSettingsGUI(game_conditions);
+			while (game_conditions.neighbour_type == NeighbourType::None && game_conditions.boundary_condition != BoundaryCondition::None)
+			{
+				displayer.clearWindow(window);
+				displayer.drawGUIonScreen(neighbourhood_GUI, window);
+				displayer.displayWindow(window);
+				displayer.listenToGUI(neighbourhood_GUI, window);
+			}
+			
+			if (!randomized)
+			{
+
+				cell_populator.randomizeMap(game_map, displayer, window, monte_carlo_groups); // groups amount
+				displayer.initializeGraphicMap(game_map, window, game_conditions.choosed_game);
+				randomized = true;
+			}
+
+			std::vector<GUIObject> start_GUI = GUI_creator.createGameOfLifeStartGUI(game_conditions);
+			while (game_conditions.game_state == GameState::Start)
+			{
+				displayer.clearWindow(window);
+				displayer.drawMap(window);
+				displayer.drawGUIonScreen(start_GUI, window);
+				displayer.displayWindow(window);
+				displayer.listenToGUI(start_GUI, window);
+			}
+
+			while (game_conditions.game_state == GameState::Update)
+			{
+				engine.energize(game_map, game_conditions.neighbour_type, game_conditions.boundary_condition);
+				while (true)
+				{
+					int random_i = rand() % CELL_HEIGHT_AMOUNT;
+					int random_j = rand() % CELL_WIDTH_AMOUNT;
+					engine.energizeOne(game_map, game_conditions.neighbour_type, game_conditions.boundary_condition, random_i, random_j, monte_carlo_groups);
+					displayer.updateGraphicCell(random_i, random_j, game_map[random_i][random_j].group, window);
+					displayer.displayWindow(window);
+					if (game_conditions.choosed_game == Games::Exit) // zrobic przycisk GUI - STOP czy coœ takiego
+					{
+						// tutaj nowe okno z ostatnia mapa
+					}
+				}
+			}
+		}
+
 		while (game_conditions.choosed_game == Games::GameOfLife)
 		{
 			game_conditions.neighbour_type = NeighbourType::Moore; // only viable for Game of Life
@@ -71,7 +120,7 @@ int main()
 				cell_populator.addCellByClick(game_map, displayer, window, true);
 
 				displayer.clearWindow(window);
-				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.drawMap(window);
 				displayer.drawGUIonScreen(start_GUI, window);
 				displayer.displayWindow(window);
 				displayer.listenToGUI(start_GUI, window);
@@ -82,7 +131,8 @@ int main()
 				displayer.clearWindow(window);
 				GameData::map_history.push_back(engine.designateNextFrame(game_map, game_conditions.neighbour_type, game_conditions.boundary_condition));
 				game_map = GameData::map_history.back();
-				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.initializeGraphicMap(game_map, window, game_conditions.choosed_game);
+				displayer.drawMap(window);
 				displayer.displayWindow(window);
 				engine.Wait();
 
@@ -111,7 +161,7 @@ int main()
 					cell_populator.addCellByClick(game_map, displayer, window, false);
 				}
 				displayer.clearWindow(window);
-				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.drawMap(window);
 				displayer.drawGUIonScreen(start_GUI, window);
 				displayer.displayWindow(window);
 				displayer.listenToGUI(start_GUI, window);
@@ -121,91 +171,92 @@ int main()
 			{
 				engine.Wait();
 				displayer.clearWindow(window);
-				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.drawMap(window);
 				displayer.displayWindow(window);
 				GameData::map_history.push_back(engine.makeSeedsGrow(game_map,
 					game_conditions.neighbour_type,
 					game_conditions.boundary_condition));
 				game_map = GameData::map_history.back();
+				displayer.initializeGraphicMap(game_map, window, game_conditions.choosed_game);
 				if (engine.isMapFull(game_map)) game_conditions.game_state = GameState::Crystallization;
 			}
 
 			
+			
 			unsigned time = 1;
-	
 			while (game_conditions.game_state == GameState::Crystallization)
 			{
-				if (time < 201)
+				previous_Ro = Ro;
+				Ro = (A / B) + (1 - (A / B)) * std::pow(e, -B * (time / 1000.0));
+
+				for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
 				{
-					previous_Ro = Ro;
-					Ro = (A / B) + (1 - (A / B)) * std::pow(e, -B * (time / 1000.0));
-
-					for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
+					for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
 					{
-						for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
+						auto deltaRo = Ro - game_map[i][j].my_ro;
+						double tempRo = deltaRo / static_cast<double>(CELL_AMOUNT);
+
+						game_map[i][j].my_ro = tempRo;
+
+						if (!game_map[i][j].crystalized)
 						{
-							auto deltaRo = Ro - game_map[i][j].my_ro;
-							double tempRo = deltaRo / static_cast<double>(CELL_AMOUNT);
-
-							game_map[i][j].my_ro = tempRo;
-
-							if (!game_map[i][j].crystalized)
+							if (engine.isCellOnEdge(game_map, i, j,
+								game_conditions.neighbour_type,
+								game_conditions.boundary_condition))
 							{
-								if (engine.isCellOnEdge(game_map, i, j,
-									game_conditions.neighbour_type,
-									game_conditions.boundary_condition))
-								{
-									game_map[i][j].my_ro = tempRo * 0.8;
-									leftover_Ro += tempRo * 0.2;
-								}
-								else
-								{
-									game_map[i][j].my_ro = tempRo * 0.2;
-									leftover_Ro += tempRo * 0.8;
-								}
+								game_map[i][j].my_ro = tempRo * 0.8;
+								leftover_Ro += tempRo * 0.2;
 							}
-						}
-					}
-					auto ro_to_add = static_cast<double>(leftover_Ro / k);
-					int random_cells_amount = rand() % CELL_AMOUNT + 1;
-					for (int i = 0; i < random_cells_amount; ++i)
-					{
-						int random_i = rand() % CELL_HEIGHT_AMOUNT;
-						int random_j = rand() % CELL_WIDTH_AMOUNT;
-
-						if (engine.isCellOnEdge(game_map, random_i, random_j,
-							game_conditions.neighbour_type,
-							game_conditions.boundary_condition))
-						{
-							game_map[random_i][random_j].my_ro += ro_to_add;
-						}
-					}
-
-					for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
-					{
-						for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
-						{
-							if (game_map[i][j].isRoExceeded() && !game_map[i][j].crystalized)
+							else
 							{
-								game_map[i][j].crystalized = true;
-								game_map[i][j].group = rand() % MAX_GROUPS;
-								game_map[i][j].my_ro = 0;
+								game_map[i][j].my_ro = tempRo * 0.2;
+								leftover_Ro += tempRo * 0.8;
 							}
 						}
 					}
 				}
+				auto ro_to_add = static_cast<double>(leftover_Ro / k);
+				int random_cells_amount = rand() % CELL_AMOUNT + 1;
+				for (int i = 0; i < random_cells_amount; ++i)
+				{
+					int random_i = rand() % CELL_HEIGHT_AMOUNT;
+					int random_j = rand() % CELL_WIDTH_AMOUNT;
+
+					if (engine.isCellOnEdge(game_map, random_i, random_j,
+						game_conditions.neighbour_type,
+						game_conditions.boundary_condition))
+					{
+						game_map[random_i][random_j].my_ro += ro_to_add;
+					}
+				}
+
+				for (int i = 0; i < CELL_HEIGHT_AMOUNT; ++i)
+				{
+					for (int j = 0; j < CELL_WIDTH_AMOUNT; ++j)
+					{
+						if (game_map[i][j].isRoExceeded() && !game_map[i][j].crystalized)
+						{
+							game_map[i][j].crystalized = true;
+							game_map[i][j].group = rand() % MAX_GROUPS;
+							game_map[i][j].my_ro = 0;
+						}
+					}
+				}
+
 				displayer.clearWindow(window);
-				displayer.drawMap(game_map, window, game_conditions.choosed_game);
+				displayer.initializeGraphicMap(game_map, window, game_conditions.choosed_game);
+				displayer.drawMap(window);
 				displayer.displayWindow(window);
+				engine.Wait();
+				
 				GameData::map_history.push_back(engine.crystalize(game_map,
 					game_conditions.neighbour_type,
 					game_conditions.boundary_condition));
 
 				game_map = GameData::map_history.back();
-				engine.Wait();
-				++time;
 				
 			}
+			
 		}
 
 	}

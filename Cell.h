@@ -9,6 +9,7 @@ public:
 	bool alive;
 	bool in_range;
 	bool crystalized;
+	unsigned energy;
 
 	Cell();
 

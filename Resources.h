@@ -27,10 +27,14 @@ constexpr double B = 9.41268203527779;
 
 constexpr double e = 2.71828182845904523536;
 
+static double game_speed = 5;
+
 constexpr unsigned k = 100; // for crystalization
 static double Ro = 1;
 static double previous_Ro = 0;
 static double leftover_Ro = 0;
+
+static double monte_carlo_groups = 15;
 
 
 

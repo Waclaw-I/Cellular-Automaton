@@ -56,7 +56,9 @@ std::vector<GUIObject> GUICreator::createMainMenuGUI(GameConditions& game_condit
 	GUI.back().setCallback([&game_conditions]() { game_conditions.choosed_game = Games::GameOfLife; });
 	GUI.push_back(GUIButton(320, 200, TexturesHolder::buttons["seeds_growth"], callback, 1, 1));
 	GUI.back().setCallback([&game_conditions]() { game_conditions.choosed_game = Games::SeedsGrowth; });
-	GUI.push_back(GUIButton(410, 300, TexturesHolder::buttons["exit"], callback, 1, 1));
+	GUI.push_back(GUIButton(320, 300, TexturesHolder::buttons["save_to_file"], callback, 1, 1));
+	GUI.back().setCallback([&game_conditions]() { game_conditions.choosed_game = Games::MonteCarlo; });
+	GUI.push_back(GUIButton(410, 400, TexturesHolder::buttons["exit"], callback, 1, 1));
 	GUI.back().setCallback([&game_conditions]() { game_conditions.choosed_game = Games::Exit; });
 
 	return GUI;
@@ -89,18 +91,21 @@ std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI(GameConditions& gam
 	auto random_cells = [&game_map, &window, &engine, &cell_populator, &displayer, &game_conditions]() {
 		game_conditions.seed_randomization = SeedRandomization::Random;
 		engine.resetMap(game_map);
+		displayer.resetGraphicMap();
 		cell_populator.addCellByRandom(game_map, displayer, window, MAX_GROUPS);
 	};
 
 	auto cells_equally = [&game_map, &window, &engine, &cell_populator, &displayer, &game_conditions]() {
 		game_conditions.seed_randomization = SeedRandomization::Equal;
 		engine.resetMap(game_map);
+		displayer.resetGraphicMap();
 		cell_populator.addCellEqually(game_map, displayer, window, MAX_GROUPS);
 	};
 
 	auto cells_random_r = [&game_map, &window, &engine, &cell_populator, &displayer, &game_conditions]() {
 		game_conditions.seed_randomization = SeedRandomization::Random_R;
 		engine.resetMap(game_map);
+		displayer.resetGraphicMap();
 		cell_populator.addCellRandom_R(game_map, displayer, window, RANGE, game_conditions);
 	};
 	auto& callback = []() { std::cout << "Nacisnieto" << std::endl; }; // blank function
@@ -109,8 +114,9 @@ std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI(GameConditions& gam
 	GUI.back().setCallback([&game_conditions]() { game_conditions.game_state = GameState::Update; });
 	GUI.push_back(GUIButton(610, 110, TexturesHolder::buttons["random"], random_cells, 1, 1));
 	GUI.push_back(GUIButton(610, 210, TexturesHolder::buttons["clicked"], callback, 1, 1));
-	GUI.back().setCallback([&game_conditions, &engine, &game_map]() { 
+	GUI.back().setCallback([&game_conditions, &engine, &game_map, &displayer]() { 
 		engine.resetMap(game_map);
+		displayer.resetGraphicMap();
 		game_conditions.seed_randomization = SeedRandomization::Clicked; });
 	GUI.push_back(GUIButton(610, 310, TexturesHolder::buttons["random_r"], cells_random_r, 1, 1));
 	GUI.push_back(GUIButton(610, 410, TexturesHolder::buttons["equal"], cells_equally, 1, 1));

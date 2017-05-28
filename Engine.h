@@ -9,6 +9,8 @@ public:
 	Map designateNextFrame(Map& map, NeighbourType neighbourhood, BoundaryCondition boundary_cond); // GameOfLife
 	Map makeSeedsGrow(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond);
 	Map crystalize(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond);
+	void energize(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond);
+	void energizeOne(Map& map, NeighbourType& neighbour_type, BoundaryCondition& boundary_cond, int i, int j, int colors);
 	void resetMap(Map& map);
 	bool isMapFull(Map& map);
 	bool isCellOnEdge(Map& map, int i, int j, NeighbourType neighbour_type, BoundaryCondition boundary_cond);

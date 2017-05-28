@@ -14,6 +14,7 @@ void CellPopulator::addCellByClick(Map& map, Displayer& displayer, std::unique_p
 			{
 				map[i][j].alive = true;
 				map[i][j].group = ACTUAL_GROUP++;
+				displayer.updateGraphicCell(i, j, map[i][j].group, window);
 				if (ACTUAL_GROUP == MAX_GROUPS) ACTUAL_GROUP = 0;
 			}
 		}
@@ -29,7 +30,22 @@ void CellPopulator::addCellByRandom(Map& map, Displayer& displayer, std::unique_
 
 		map[i][j].alive = true;
 		map[i][j].group = ACTUAL_GROUP++;
+		displayer.updateGraphicCell(i, j, map[i][j].group, window);
 		if (ACTUAL_GROUP == MAX_GROUPS) ACTUAL_GROUP = 0;
+	}
+}
+
+void CellPopulator::randomizeMap(Map& map, Displayer& displayer, std::unique_ptr<sf::RenderWindow>& window, int amount)
+{
+	for (int i = 0; i < map.size(); ++i)
+	{
+		auto&& col_size = map[i].size();
+		for (int j = 0; j < col_size; ++j)
+		{
+			map[i][j].alive = true;
+			map[i][j].group = rand() % amount;
+			displayer.updateGraphicCell(i, j, map[i][j].group, window);
+		}
 	}
 }
 
@@ -39,9 +55,11 @@ void CellPopulator::addCellEqually(Map& map, Displayer& displayer, std::unique_p
 	int it = step;
 	for (int k = 0; k < amount; ++k)
 	{
-
-		map[it / CELL_WIDTH_AMOUNT][it % CELL_WIDTH_AMOUNT].alive = true;
-		map[it / CELL_WIDTH_AMOUNT][it % CELL_WIDTH_AMOUNT].group = ACTUAL_GROUP++;
+		int i = it / CELL_WIDTH_AMOUNT;
+		int j = it % CELL_WIDTH_AMOUNT;
+		map[i][j].alive = true;
+		map[i][j].group = ACTUAL_GROUP++;
+		displayer.updateGraphicCell(i, j, map[i][j].group, window);
 		if (ACTUAL_GROUP == MAX_GROUPS) ACTUAL_GROUP = 0;
 		it += step;
 	}
@@ -78,6 +96,7 @@ void CellPopulator::addCellRandom_R(Map& map, Displayer& displayer, std::unique_
 		{
 			cell.alive = true;
 			cell.group = ACTUAL_GROUP++;
+			displayer.updateGraphicCell(i, j, cell.group, window);
 			if (ACTUAL_GROUP == MAX_GROUPS) ACTUAL_GROUP = 0;
 			std::pair<int, int> up_left = { i - range, j - range };
 			std::pair<int, int>down_right = { i + range, j + range };
