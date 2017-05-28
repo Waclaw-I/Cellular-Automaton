@@ -21,6 +21,7 @@ public:
 	std::vector<GUIObject> createPeriodicSettingsGUI(GameConditions& game_conditions);
 	std::vector<GUIObject> createNeighbourhoodSettingsGUI(GameConditions& game_conditions);
 	std::vector<GUIObject> createSeedsGrowthUpdateGUI(GameConditions& game_conditions);
+	std::vector<GUIObject> createPauseGUI(GameConditions & game_conditions);
 	std::vector<GUIObject> createSeedsGrowthStartGUI(GameConditions& game_conditions,
 		Map& game_map,
 		Engine& engine,

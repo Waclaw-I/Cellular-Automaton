@@ -124,6 +124,16 @@ std::vector<GUIObject> GUICreator::createSeedsGrowthStartGUI(GameConditions& gam
 
 }
 
+std::vector<GUIObject> GUICreator::createPauseGUI(GameConditions & game_conditions)
+{
+	auto& callback = [&game_conditions]() { game_conditions.choosed_game = Games::Exit; };
+	std::vector<GUIObject> GUI;
+	GUI.push_back(GUIButton(645, 400, TexturesHolder::buttons["pause"], callback, 1.3, 1.3));
+
+	return GUI;
+}
+
+
 std::vector<GUIObject> GUICreator::createSeedsGrowthUpdateGUI(GameConditions& game_conditions)
 {
 	auto& callback = []() {};

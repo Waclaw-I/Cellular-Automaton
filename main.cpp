@@ -83,17 +83,19 @@ int main()
 			}
 
 			std::vector<GUIObject> start_GUI = GUI_creator.createGameOfLifeStartGUI(game_conditions);
+			std::vector<GUIObject> stop_GUI = GUI_creator.createPauseGUI(game_conditions);
 			while (game_conditions.game_state == GameState::Start)
 			{
 				displayer.clearWindow(window);
 				displayer.drawMap(window);
 				displayer.drawGUIonScreen(start_GUI, window);
-				displayer.displayWindow(window);
 				displayer.listenToGUI(start_GUI, window);
+				displayer.displayWindow(window);
 			}
 
 			while (game_conditions.game_state == GameState::Update)
 			{
+				
 				engine.energize(game_map, game_conditions.neighbour_type, game_conditions.boundary_condition);
 				while (true)
 				{
@@ -101,10 +103,19 @@ int main()
 					int random_j = rand() % CELL_WIDTH_AMOUNT;
 					engine.energizeOne(game_map, game_conditions.neighbour_type, game_conditions.boundary_condition, random_i, random_j, monte_carlo_groups);
 					displayer.updateGraphicCell(random_i, random_j, game_map[random_i][random_j].group, window);
+					displayer.drawGUIonScreen(stop_GUI, window);
+					displayer.listenToGUI(stop_GUI, window);
 					displayer.displayWindow(window);
-					if (game_conditions.choosed_game == Games::Exit) // zrobic przycisk GUI - STOP czy coœ takiego
+					if (game_conditions.choosed_game == Games::Exit)
 					{
-						// tutaj nowe okno z ostatnia mapa
+						auto result_window = std::make_unique<sf::RenderWindow>(sf::VideoMode(DISPLAY_WIDTH, DISPLAY_HEIGHT), "Result");
+						while (true)
+						{
+							displayer.displayResult(result_window);
+							displayer.displayWindow(result_window);
+						}
+							
+
 					}
 				}
 			}

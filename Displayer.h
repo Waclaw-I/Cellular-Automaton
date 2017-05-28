@@ -13,6 +13,7 @@ public:
 	void clearWindow(std::unique_ptr<sf::RenderWindow>& window);
 	void resetGraphicMap();
 	void displayWindow(std::unique_ptr<sf::RenderWindow>& window);
+	void displayResult(std::unique_ptr<sf::RenderWindow>& window);
 	void initializeGraphicMap(const Map& map, std::unique_ptr<sf::RenderWindow>& window, Games choosed_game);
 	void updateGraphicCell(int i, int j, int color, std::unique_ptr<sf::RenderWindow>& window);
 	void drawMap(std::unique_ptr<sf::RenderWindow>& window);

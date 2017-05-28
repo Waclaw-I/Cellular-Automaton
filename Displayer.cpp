@@ -106,6 +106,20 @@ void Displayer::updateGraphicCell(int i, int j, int color, std::unique_ptr<sf::R
 	drawCell(cells_representation[i][j], window);
 }
 
+void Displayer::displayResult(std::unique_ptr<sf::RenderWindow>& window)
+{
+	for (int i = 0; i < cells_representation.size(); ++i)
+	{
+		auto&& row_size = cells_representation[i].size();
+		for (int j = 0; j < row_size; ++j)
+		{
+			cells_representation[i][j].setPosition(DISPLAY_CELL_HEIGHT * i, DISPLAY_CELL_WIDTH * j);
+			cells_representation[i][j].setSize(sf::Vector2f(DISPLAY_CELL_HEIGHT, DISPLAY_CELL_WIDTH));
+			window->draw(cells_representation[i][j]);
+		}
+	}
+}
+
 void Displayer::drawCell(sf::RectangleShape& cell, std::unique_ptr<sf::RenderWindow>& window)
 {
 	window->draw(cell);
