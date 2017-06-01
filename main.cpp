@@ -8,24 +8,25 @@
 #include "CellPopulator.h"
 #include "Engine.h"
 #include "gui/GUICreator.h"
+#include "FileReader.h"
 
 
 using namespace std;
 
+FileReader file_reader("settings.txt");
 
-MapGenerator map_generator;
-GUICreator GUI_creator;
-CellPopulator cell_populator;
-
-
-SeedsGrowthConditions seeds_growth_conditions;
-GameOfLifeConditions game_of_life_conditions;
-Displayer displayer;
-Engine engine;
 
 
 int main()
 {
+	MapGenerator map_generator;
+	GUICreator GUI_creator;
+	CellPopulator cell_populator;
+	SeedsGrowthConditions seeds_growth_conditions;
+	GameOfLifeConditions game_of_life_conditions;
+	Displayer displayer;
+	Engine engine;
+
 	TexturesHolder::loadTextures();
 	srand(time(NULL));
 	GameConditions game_conditions;

@@ -3,6 +3,7 @@
 
 Displayer::Displayer()
 {
+	std::cout << "displayer";
 	createColors();
 	sf::RectangleShape model_rect;
 	model_rect.setSize(sf::Vector2f(CELL_WIDTH, CELL_HEIGHT));

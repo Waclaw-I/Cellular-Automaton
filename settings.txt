@@ -1,0 +1,8 @@
+cell_rows 25
+cell_cols 25
+colors 30
+range 5
+random_R_tries 3000
+speed 1
+k 100
+monte_carlo_groups 15
